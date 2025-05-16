@@ -18,7 +18,7 @@ def run_search_agent(context: ContextManager):
         query = msg.payload["query"]  # Query to search
         
         # Use LangChain's agent to perform search
-        print("🔑 OPENAI_API_KEY =", os.getenv("OPENAI_API_KEY"))
+        # print("🔑 OPENAI_API_KEY =", os.getenv("OPENAI_API_KEY"))
 
         llm = ChatOpenAI()
         tools = [web_search_tool]

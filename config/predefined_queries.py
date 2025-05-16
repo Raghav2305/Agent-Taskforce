@@ -15,5 +15,13 @@ predefined_queries = [
     {
         "query": "new tools and frameworks in multi-agent AI systems",
         "topic": "Multi-Agent Systems"
+    },
+    {
+        "query": "latest advances in string theory physics",
+        "topic": "Theoretical Physics"
+    },
+    {
+        "query": "new techniques and tools in astronomy and cosmology",
+        "topic": "Astrophysics"
     }
 ]

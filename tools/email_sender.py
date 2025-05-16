@@ -1,10 +1,12 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
 
 def send_email(subject, body_html, to_email):
     from_email = "mytest23052001@gmail.com"     # ✅ Replace with your Gmail
-    app_password = "clfpdygalvbsagbp"  
+    APP_PASSWORD = os.getenv("AGENT_TASKFORCE_APP_PASSWORD")
+     
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
@@ -15,7 +17,7 @@ def send_email(subject, body_html, to_email):
 
     try:
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        server.login(from_email, app_password)
+        server.login(from_email, APP_PASSWORD)
         server.sendmail(from_email, to_email, msg.as_string())
         server.quit()
         print("✅ Email sent successfully.")

@@ -1,0 +1,31 @@
+name: Run Daily MEMAT Script at 10AM IST
+
+on:
+  schedule:
+    - cron: '30 4 * * *'  # Runs daily at 10:00 AM IST
+  workflow_dispatch:        # Allows manual trigger from GitHub
+
+jobs:
+  run-memat:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run the MEMAT script
+        run: python app.py
+
+      - name: Debug Env Vars (Optional)
+        if: failure()
+        run: env
