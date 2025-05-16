@@ -1,0 +1,11 @@
+# TODO: Implement requirements.txt
+langchain
+openai
+faiss-cpu
+chromadb
+google-search-results
+pydantic
+langchain_community
+langchain-openai
+
+
