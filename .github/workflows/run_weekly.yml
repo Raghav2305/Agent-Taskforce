@@ -1,8 +1,8 @@
-name: Run Daily MEMAT Script at 10AM IST
+name: Run Weekly MEMAT Script at 10AM IST
 
 on:
   schedule:
-    - cron: '30 4 * * *'  # Runs daily at 10:00 AM IST
+    - cron: '30 4 * * 1'  # ⏰ Every Monday at 4:30 AM UTC = 10:00 AM IST
   workflow_dispatch:        # Allows manual trigger from GitHub
 
 jobs:
