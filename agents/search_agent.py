@@ -8,45 +8,46 @@ import os
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Define SearchAgent
 def run_search_agent(context: ContextManager):
-    """Runs the SearchAgent and sends search results to ReaderAgent."""
-    # Get any pending messages for the SearchAgent
     messages = context.get_messages_for("search_agent")
     
     for msg in messages:
-        query = msg.payload["query"]  # Query to search
+        query = msg.payload["query"]
         
-        # Use LangChain's agent to perform search
-        # print("🔑 OPENAI_API_KEY =", os.getenv("OPENAI_API_KEY"))
-
         llm = ChatOpenAI()
         tools = [web_search_tool]
-        agent = initialize_agent(tools, llm, agent_type="zero-shot-react-description")
+
+        agent = initialize_agent(
+            tools,
+            llm,
+            agent_type="zero-shot-react-description",
+            handle_parsing_errors=True,  # This helps with output parsing retries
+        )
         
         try:
-            # Run the search task
-            search_results = agent.run(f"Search for: {query}")
-            
-            # Clean up the output if needed (in case there are action-based responses)
-            cleaned_results = search_results.split("Action:")[0].strip()  # Taking only the relevant part
-            
-            # Process and forward results to ReaderAgent
+            # Use invoke instead of deprecated run
+            response = agent.invoke({"input": f"Search for: {query}"})
+            search_results = response.get("output", "")
+
+            # If you want to be safe, remove any trailing agent "Action:" or internal text manually but carefully
+            # Example (optional):
+            if "Action:" in search_results:
+                search_results = search_results.split("Action:")[0].strip()
+
+            # Send results to reader agent
             new_msg = MCPMessage(
                 sender="search_agent",
                 receiver="reader_agent",
                 task_type="summarize_results",
                 payload={
-                    "search_results": cleaned_results,
-                    "topic": msg.payload.get("topic", "AI")  # Default fallback just in case
+                    "search_results": search_results,
+                    "topic": msg.payload.get("topic", "AI")
                 }
             )
-
             context.send_message(new_msg)
 
         except Exception as e:
             print(f"❌ Error running search task: {str(e)}")
-            # Handle error gracefully, maybe send a message back with an error status
             error_msg = MCPMessage(
                 sender="search_agent",
                 receiver="reader_agent",
