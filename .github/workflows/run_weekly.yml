@@ -9,6 +9,12 @@ jobs:
   run-memat:
     runs-on: ubuntu-latest
 
+    env:  # ✅ Expose GitHub Secrets as Environment Variables
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+      EMAIL_PASSWORD: ${{ secrets.AGENT_TASKFORCE_APP_PASSWORD }}
+      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
